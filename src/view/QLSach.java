@@ -32,7 +32,7 @@ public class QLSach extends javax.swing.JFrame {
     
     // Tập
     cboTap.removeAllItems();
-    for (int i = 1; i <= 10; i++) {
+    for (int i = 1; i <= 2; i++) {
         cboTap.addItem(String.valueOf(i));
     }
 
