@@ -18,25 +18,33 @@ public class Sach {
     private int soLuong;
     private BigDecimal gia;
     private int namXuatBan;
-    
+
+    // Thêm 3 field tên để hiển thị
+    private String tenMonHoc;
+    private String tenLop;
+    private String tenBoSach;
+
     public Sach() {
     }
-    
-    public Sach(String maS, String tenTieuDe, int tap, String moTa, int maMH, int maLop, int maBoSach, int soTrang, String kichThuoc, String hinhThuc, int soLuong, BigDecimal gia, int namXuatBan) {
-        this.maS = maS;
-        this.tenTieuDe = tenTieuDe;
-        this.tap = tap;
-        this.moTa = moTa;
-        this.maMH = maMH;
-        this.maLop = maLop;
-        this.maBoSach = maBoSach;
-        this.soTrang = soTrang;
-        this.kichThuoc = kichThuoc;
-        this.hinhThuc = hinhThuc;
-        this.soLuong = soLuong;
-        this.gia = gia;
-        this.namXuatBan = namXuatBan;
-    }
+
+    public Sach(String maS, String tenTieuDe, int tap, String moTa,
+            int maMH, int maLop, int maBoSach,
+            int soTrang, String kichThuoc, String hinhThuc,
+            int soLuong, BigDecimal gia, int namXuatBan) {
+                this.maS        = maS;
+                this.tenTieuDe  = tenTieuDe;
+                this.tap        = tap;
+                this.moTa       = moTa;
+                this.maMH       = maMH;
+                this.maLop      = maLop;
+                this.maBoSach   = maBoSach;
+                this.soTrang    = soTrang;
+                this.kichThuoc  = kichThuoc;
+                this.hinhThuc   = hinhThuc;
+                this.soLuong    = soLuong;
+                this.gia        = gia;
+                this.namXuatBan = namXuatBan;
+            }
 
     public String getMaS() {
         return maS;
@@ -142,10 +150,33 @@ public class Sach {
         this.namXuatBan = namXuatBan;
     }
 
-    @Override
-    public String toString() {
-        return "Sach{" + "maS=" + maS + ", tenTieuDe=" + tenTieuDe + ", tap=" + tap + ", moTa=" + moTa + ", maMH=" + maMH + ", maLop=" + maLop + ", maBoSach=" + maBoSach + ", soTrang=" + soTrang + ", kichThuoc=" + kichThuoc + ", hinhThuc=" + hinhThuc + ", soLuong=" + soLuong + ", gia=" + gia + ", namXuatBan=" + namXuatBan + '}';
+    public String getTenMonHoc() {
+        return tenMonHoc;
     }
 
+    public void setTenMonHoc(String tenMonHoc) {
+        this.tenMonHoc = tenMonHoc;
+    }
+
+    public String getTenLop() {
+        return tenLop;
+    }
+
+    public void setTenLop(String tenLop) {
+        this.tenLop = tenLop;
+    }
+
+    public String getTenBoSach() {
+        return tenBoSach;
+    }
+
+    public void setTenBoSach(String tenBoSach) {
+        this.tenBoSach = tenBoSach;
+    }
+
+    @Override
+    public String toString() {
+        return "Sach{" + "maS=" + maS + ", tenTieuDe=" + tenTieuDe + ", tap=" + tap + ", moTa=" + moTa + ", maMH=" + maMH + ", maLop=" + maLop + ", maBoSach=" + maBoSach + ", soTrang=" + soTrang + ", kichThuoc=" + kichThuoc + ", hinhThuc=" + hinhThuc + ", soLuong=" + soLuong + ", gia=" + gia + ", namXuatBan=" + namXuatBan + ", tenMonHoc=" + tenMonHoc + ", tenLop=" + tenLop + ", tenBoSach=" + tenBoSach + '}';
+    }
     
 }

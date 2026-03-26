@@ -29,113 +29,136 @@ public class QLSach extends javax.swing.JFrame {
     }
 
     private void loadComboBox() {
-    
-    // Tập
-    cboTap.removeAllItems();
-    for (int i = 1; i <= 2; i++) {
-        cboTap.addItem(String.valueOf(i));
-    }
 
-    // Hình thức
-    cboHinhThuc.removeAllItems();
-    cboHinhThuc.addItem("Bìa mềm");
-    cboHinhThuc.addItem("Bìa cứng");
-
-    // Bộ sách
-    cboBoSach.removeAllItems();
-    cboBoSach.addItem("1");
-    cboBoSach.addItem("2");
-    cboBoSach.addItem("3");
-
-    //  LOAD LỚP TỪ DB
-    try (var conn = utils.DBConnect.getConnection();
-         var ps = conn.prepareStatement("SELECT maLop FROM Lop");
-         var rs = ps.executeQuery()) {
-
-        cboLop.removeAllItems();
-        while (rs.next()) {
-            cboLop.addItem(rs.getString("maLop"));
+        // Tập
+        cboTap.removeAllItems();
+        for (int i = 1; i <= 10; i++) {
+            cboTap.addItem(String.valueOf(i));
         }
 
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
+        // Hình thức
+        cboHinhThuc.removeAllItems();
+        cboHinhThuc.addItem("Bìa mềm");
+        cboHinhThuc.addItem("Bìa cứng");
 
-    //  LOAD MÔN HỌC
-    try (var conn = utils.DBConnect.getConnection();
-         var ps = conn.prepareStatement("SELECT maMH FROM MonHoc");
-         var rs = ps.executeQuery()) {
+        // Load Môn Học (hiện tên, lưu mã)
+        try (var conn = utils.DBConnect.getConnection();
+             var ps = conn.prepareStatement("SELECT maMH, tenMonHoc FROM MonHoc");
+             var rs = ps.executeQuery()) {
 
-        cboMonHoc.removeAllItems();
-        while (rs.next()) {
-            cboMonHoc.addItem(rs.getString("maMH"));
+            cboMonHoc.removeAllItems();
+            while (rs.next()) {
+                // format: "1 - Toán" để sau parse lấy mã
+                cboMonHoc.addItem(rs.getInt("maMH") + " - " + rs.getString("tenMonHoc"));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-    } catch (Exception e) {
-        e.printStackTrace();
+        // Load Lớp (hiện tên, lưu mã)
+        try (var conn = utils.DBConnect.getConnection();
+             var ps = conn.prepareStatement("SELECT maLop, tenLop FROM Lop");
+             var rs = ps.executeQuery()) {
+
+            cboLop.removeAllItems();
+            while (rs.next()) {
+                cboLop.addItem(rs.getInt("maLop") + " - " + rs.getString("tenLop"));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Load Bộ Sách (hiện tên, lưu mã)
+        try (var conn = utils.DBConnect.getConnection();
+             var ps = conn.prepareStatement("SELECT maBoSach, tenBoSach FROM BoSach");
+             var rs = ps.executeQuery()) {
+
+            cboBoSach.removeAllItems();
+            while (rs.next()) {
+                cboBoSach.addItem(rs.getInt("maBoSach") + " - " + rs.getString("tenBoSach"));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-}
     private void loadTable(List<Sach> list) {
-    model.setRowCount(0);
+        model.setRowCount(0);
 
-    for (Sach s : list) {
-        model.addRow(new Object[]{
-            s.getMaS(),
-            s.getTenTieuDe(),
-            s.getTap(),
-            s.getMoTa(),
-            s.getMaMH(),
-            s.getMaLop(),
-            s.getMaBoSach(),
-            s.getSoTrang(),
-            s.getKichThuoc(),
-            s.getHinhThuc(),
-            s.getSoLuong(),
-            s.getGia(),
-            s.getNamXuatBan()
-        });
+        for (Sach s : list) {
+            model.addRow(new Object[]{
+                s.getMaS(),
+                s.getTenTieuDe(),
+                s.getTap(),
+                s.getMoTa(),
+                s.getTenMonHoc(),   // hiện "Toán" thay vì 1
+                s.getTenLop(),      // hiện "Lớp 1" thay vì 1
+                s.getTenBoSach(),   // hiện "Cánh Diều" thay vì 1
+                s.getSoTrang(),
+                s.getKichThuoc(),
+                s.getHinhThuc(),
+                s.getSoLuong(),
+                s.getGia(),
+                s.getNamXuatBan()
+            });
+        }
     }
-}
     private void fillForm() {
-    int row = tblQLSach.getSelectedRow();
-    if (row == -1) return;
+        int row = tblQLSach.getSelectedRow();
+        if (row == -1) return;
 
-    txtMaSach.setText(model.getValueAt(row, 0).toString());
-    txtTieuDe.setText(model.getValueAt(row, 1).toString());
-    cboTap.setSelectedItem(model.getValueAt(row, 2).toString());
-    txtMoTa.setText(model.getValueAt(row, 3).toString());
+        txtMaSach.setText(model.getValueAt(row, 0).toString());
+        txtTieuDe.setText(model.getValueAt(row, 1).toString());
+        cboTap.setSelectedItem(model.getValueAt(row, 2).toString());
+        txtMoTa.setText(model.getValueAt(row, 3).toString());
 
-    cboMonHoc.setSelectedItem(model.getValueAt(row, 4).toString());
-    cboLop.setSelectedItem(model.getValueAt(row, 5).toString());
-    cboBoSach.setSelectedItem(model.getValueAt(row, 6).toString());
+        // Tìm item trong combo có chứa tên tương ứng
+        selectComboByName(cboMonHoc, model.getValueAt(row, 4).toString());
+        selectComboByName(cboLop,    model.getValueAt(row, 5).toString());
+        selectComboByName(cboBoSach, model.getValueAt(row, 6).toString());
 
-    txtSoTrang.setText(model.getValueAt(row, 7).toString());
-    txtKichThuoc.setText(model.getValueAt(row, 8).toString());
-    cboHinhThuc.setSelectedItem(model.getValueAt(row, 9).toString());
-    txtSoLuong.setText(model.getValueAt(row, 10).toString());
-    txtGia.setText(model.getValueAt(row, 11).toString());
-    txtNamXB.setText(model.getValueAt(row, 12).toString());
-}
+        txtSoTrang.setText(model.getValueAt(row, 7).toString());
+        txtKichThuoc.setText(model.getValueAt(row, 8).toString());
+        cboHinhThuc.setSelectedItem(model.getValueAt(row, 9).toString());
+        txtSoLuong.setText(model.getValueAt(row, 10).toString());
+        txtGia.setText(model.getValueAt(row, 11).toString());
+        txtNamXB.setText(model.getValueAt(row, 12).toString());
+    }
+    private void selectComboByName(javax.swing.JComboBox<String> cbo, String name) {
+        for (int i = 0; i < cbo.getItemCount(); i++) {
+            if (cbo.getItemAt(i).contains(name)) {
+                cbo.setSelectedIndex(i);
+                return;
+            }
+        }
+    }
+    private int getMaFromCombo(javax.swing.JComboBox<String> cbo) {
+        String item = cbo.getSelectedItem().toString(); // "1 - Toán"
+        return Integer.parseInt(item.split(" - ")[0]);  // lấy phần trước " - "
+    }
+
     private Sach getFormData() {
-    return new Sach(
-            txtMaSach.getText(),
-            txtTieuDe.getText(),
-            Integer.parseInt(cboTap.getSelectedItem().toString()),
-            txtMoTa.getText(),
+        return new Sach(
+                txtMaSach.getText().trim(),
+                txtTieuDe.getText().trim(),
+                Integer.parseInt(cboTap.getSelectedItem().toString()),
+                txtMoTa.getText().trim(),
 
-            Integer.parseInt(cboLop.getSelectedItem().toString()),
-            Integer.parseInt(cboMonHoc.getSelectedItem().toString()),
-            Integer.parseInt(cboBoSach.getSelectedItem().toString()),
+                getMaFromCombo(cboMonHoc),   // maMH
+                getMaFromCombo(cboLop),      // maLop
+                getMaFromCombo(cboBoSach),   // maBoSach
 
-            Integer.parseInt(txtSoTrang.getText()),
-            txtKichThuoc.getText(),
-            cboHinhThuc.getSelectedItem().toString(),
+                Integer.parseInt(txtSoTrang.getText().trim()),
+                txtKichThuoc.getText().trim(),
+                cboHinhThuc.getSelectedItem().toString(),
 
-            Integer.parseInt(txtSoLuong.getText()),
-            new BigDecimal(txtGia.getText()),
-            Integer.parseInt(txtNamXB.getText())
-    );
-}
+                Integer.parseInt(txtSoLuong.getText().trim()),
+                new java.math.BigDecimal(txtGia.getText().trim()),
+                Integer.parseInt(txtNamXB.getText().trim())
+        );
+    }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
